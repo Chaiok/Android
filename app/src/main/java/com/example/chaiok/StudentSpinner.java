@@ -60,7 +60,7 @@ public class StudentSpinner extends BaseAdapter implements SpinnerAdapter {
             );
         }
         text.setTextColor(Color.BLACK);
-        text.setText(data.get(position).getFirst_name()+" "+data.get(position).getLast_name()+" "+data.get(position).getMiddle_name()+" "+data.get(position).getGang());
+        text.setText(data.get(position).getFirst_name()+" "+data.get(position).getLast_name()+" "+data.get(position).getMiddle_name()+" "+data.get(position).getGang().toString());
         return text;
     }
 }

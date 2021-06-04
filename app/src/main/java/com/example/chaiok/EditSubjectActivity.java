@@ -2,6 +2,7 @@ package com.example.chaiok;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -36,12 +37,13 @@ public class EditSubjectActivity extends AppCompatActivity {
     List<StudentAddActivity.Mark> mark;
 
     private class submark {
-        private Integer id,mark;
+        private Integer id, mark;
         private String name;
-        submark(Integer id, String name,Integer mark){
-            this.id=id;
-            this.mark=mark;
-            this.name=name;
+
+        submark(Integer id, String name, Integer mark) {
+            this.id = id;
+            this.mark = mark;
+            this.name = name;
         }
 
         public Integer getId() {
@@ -154,10 +156,10 @@ public class EditSubjectActivity extends AppCompatActivity {
         setContentView(R.layout.activity_subject_list);
 
         mark = new ArrayList<StudentAddActivity.Mark>();
-        mark.add(new StudentAddActivity.Mark(2,"Неатестован"));
-        mark.add(new StudentAddActivity.Mark(3,"Удовлетворительно"));
-        mark.add(new StudentAddActivity.Mark(4,"Хорошо"));
-        mark.add(new StudentAddActivity.Mark(5,"Отлично"));
+        mark.add(new StudentAddActivity.Mark(2, "Неатестован"));
+        mark.add(new StudentAddActivity.Mark(3, "Удовлетворительно"));
+        mark.add(new StudentAddActivity.Mark(4, "Хорошо"));
+        mark.add(new StudentAddActivity.Mark(5, "Отлично"));
 
         Bundle arguments = getIntent().getExtras();
         id = arguments.getInt("id");
@@ -198,7 +200,7 @@ public class EditSubjectActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void delete(){
+    private void delete() {
         AlertDialog.Builder subjectDialog;
         subjectDialog = new AlertDialog.Builder(EditSubjectActivity.this);
         subjectDialog.setTitle("Кого удалить");
@@ -213,16 +215,16 @@ public class EditSubjectActivity extends AppCompatActivity {
         Cursor query = db.rawQuery("SELECT * FROM subject where id_student=?", new String[]{String.valueOf(id)});
         while (query.moveToNext()) {
             String name;
-            int mark,id_sub;
+            int mark, id_sub;
             id_sub = query.getInt(0);
             name = query.getString(2);
             mark = query.getInt(3);
-            subject.add(new submark(id_sub,name,mark));
+            subject.add(new submark(id_sub, name, mark));
         }
         query.close();
         db.close();
 
-        SubMarkSpinnerAdapter spinner = new SubMarkSpinnerAdapter(EditSubjectActivity.this,subject);
+        SubMarkSpinnerAdapter spinner = new SubMarkSpinnerAdapter(EditSubjectActivity.this, subject);
         sp.setAdapter(spinner);
 
         subjectDialog.setView(vv);
@@ -250,35 +252,85 @@ public class EditSubjectActivity extends AppCompatActivity {
         subjectDialog.show();
     }
 
-    private void Update(){
+    private void Update() {
         ListView lv = (ListView) findViewById(R.id.subject_listView);
         SQLiteDatabase db = getBaseContext().openOrCreateDatabase("chaiok.db", MODE_PRIVATE, null);
         Cursor query = db.rawQuery("SELECT * FROM subject where id_student=?", new String[]{String.valueOf(id)});
         ArrayList<submark> subject = new ArrayList<submark>();
         while (query.moveToNext()) {
             String name;
-            int mark,id_sub;
+            int mark, id_sub;
             id_sub = query.getInt(0);
             name = query.getString(2);
             mark = query.getInt(3);
-            subject.add(new submark(id_sub,name,mark));
+            subject.add(new submark(id_sub, name, mark));
         }
-        SubMarkAdapter adapter= new SubMarkAdapter(EditSubjectActivity.this, subject);
+        SubMarkAdapter adapter = new SubMarkAdapter(EditSubjectActivity.this, subject);
         lv.setAdapter(adapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
                 submark sub = (submark) parent.getItemAtPosition(position);
-                //Edit(sub.getMark());
-                Edit(sub.getId());
-                //Edit(Integer.valueOf(((TextView) itemClicked.findViewById(R.id.tvlistid1)).getText().toString()));
+                showPopupMenu(itemClicked.findViewById(R.id.tvlistmark), parent, position);
+                //Edit(sub.getId());
             }
         });
         query.close();
         db.close();
     }
 
-    private void Edit(int id_sub){
+    private void showPopupMenu(View v, AdapterView<?> parent, int position) {
+        PopupMenu popupMenu = new PopupMenu(this, v);
+        popupMenu.inflate(R.menu.popup_marks);
+
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Integer mark;
+                switch (item.getItemId()) {
+                    case R.id.popup5: {
+                        mark = 5;
+                        break;
+                    }
+                    case R.id.popup4: {
+                        mark = 4;
+                        break;
+                    }
+                    case R.id.popup3: {
+                        mark = 3;
+                        break;
+                    }
+                    case R.id.popup2: {
+                        mark = 2;
+                        break;
+                    }
+                    default:
+                        return false;
+                }
+                submark sub = (submark) parent.getItemAtPosition(position);
+                ContentValues values = new ContentValues();
+                values.put("mark", mark);
+                SQLiteDatabase db = getBaseContext().openOrCreateDatabase("chaiok.db", MODE_PRIVATE, null);
+                try {
+                    db.update("subject", values, "id = ?", new String[]{String.valueOf(sub.getId())});
+                } catch (Exception e) {
+                    Toast.makeText(getApplicationContext(), "Произошла ошибка", Toast.LENGTH_LONG).show();
+                } finally {
+                }
+                db.close();
+                Update();
+                return true;
+            }
+        });
+        popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
+            @Override
+            public void onDismiss(PopupMenu menu) {
+            }
+        });
+        popupMenu.show();
+    }
+
+    private void Edit(int id_sub) {
         AlertDialog.Builder subjectDialog;
         subjectDialog = new AlertDialog.Builder(EditSubjectActivity.this);
         subjectDialog.setTitle("Изменить данные о предмете");
@@ -323,7 +375,7 @@ public class EditSubjectActivity extends AppCompatActivity {
         subjectDialog.show();
     }
 
-    private void add(){
+    private void add() {
         AlertDialog.Builder subjectDialog;
         subjectDialog = new AlertDialog.Builder(EditSubjectActivity.this);
         subjectDialog.setTitle("Новый предмет");
@@ -356,7 +408,8 @@ public class EditSubjectActivity extends AppCompatActivity {
                     newRowId = db.insert("subject", null, values);
                 } catch (Exception e) {
                     e.printStackTrace();
-                } finally {}
+                } finally {
+                }
                 db.close();
                 Update();
             }

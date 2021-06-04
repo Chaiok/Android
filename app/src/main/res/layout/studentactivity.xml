@@ -22,7 +22,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="firstname" />
+                android:text="Имя" />
 
             <EditText
                 android:id="@+id/studentfirstname"
@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="lastname" />
+                android:text="Фамилия" />
 
             <EditText
                 android:id="@+id/studentlastname"
@@ -65,7 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="midname" />
+                android:text="Отчество" />
 
             <EditText
                 android:id="@+id/studentmidname"
@@ -86,7 +86,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="gang" />
+                android:text="Группа" />
 
             <EditText
                 android:id="@+id/studentgroup"
@@ -94,7 +94,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
-                android:inputType="textPersonName" />
+                android:inputType="number" />
         </LinearLayout>
 
         <Button

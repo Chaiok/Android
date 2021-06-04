@@ -22,8 +22,6 @@
         </activity>
         <activity android:name=".StudentAddActivity">
         </activity>
-        <activity android:name=".StudentListActivity">
-        </activity>
         <activity android:name=".EditSubjectActivity">
         </activity>
     </application>

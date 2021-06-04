@@ -38,9 +38,10 @@ public class StudentAddActivity extends AppCompatActivity {
     static class Mark {
         private Integer id;
         private String mark;
-        Mark(Integer id, String mark){
-            this.id=id;
-            this.mark=mark;
+
+        Mark(Integer id, String mark) {
+            this.id = id;
+            this.mark = mark;
         }
 
         public Integer getId() {
@@ -60,7 +61,7 @@ public class StudentAddActivity extends AppCompatActivity {
         }
     }
 
-    static class MarkSpinnerAdapter extends BaseAdapter implements SpinnerAdapter{
+    static class MarkSpinnerAdapter extends BaseAdapter implements SpinnerAdapter {
         private final List<Mark> data;
         LayoutInflater lInflater;
         Context ctx;
@@ -96,9 +97,9 @@ public class StudentAddActivity extends AppCompatActivity {
                         android.R.layout.simple_dropdown_item_1line, parent, false
                 );
             }
-            if(data.get(position).getId()<=2) {
-                text.setTextColor(Color.RED);}
-            else{
+            if (data.get(position).getId() <= 2) {
+                text.setTextColor(Color.RED);
+            } else {
                 text.setTextColor(Color.BLACK);
             }
             text.setText(data.get(position).getMark());
@@ -121,10 +122,10 @@ public class StudentAddActivity extends AppCompatActivity {
         ed4.addTextChangedListener(tw);
 
         mark = new ArrayList<Mark>();
-        mark.add(new Mark(2,"Неатестован"));
-        mark.add(new Mark(3,"Удовлетворительно"));
-        mark.add(new Mark(4,"Хорошо"));
-        mark.add(new Mark(5,"Отлично"));
+        mark.add(new Mark(2, "Неатестован"));
+        mark.add(new Mark(3, "Удовлетворительно"));
+        mark.add(new Mark(4, "Хорошо"));
+        mark.add(new Mark(5, "Отлично"));
 
 
         View.OnClickListener cancel = new View.OnClickListener() {
@@ -195,7 +196,7 @@ public class StudentAddActivity extends AppCompatActivity {
                 Mark mark;
                 name = et.getText().toString();
                 mark = (Mark) sp.getSelectedItem();
-                subject.add( new Subject(name, mark.getId()));
+                subject.add(new Subject(name, mark.getId()));
                 Update();
             }
         }).setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
@@ -208,6 +209,7 @@ public class StudentAddActivity extends AppCompatActivity {
     }
 
     SubjectAdapter olAdapter;
+
     public void Update() {
         olAdapter = new SubjectAdapter(StudentAddActivity.this, subject);
         ListView lvmain = (ListView) findViewById(R.id.lbsubjects);
@@ -261,11 +263,11 @@ public class StudentAddActivity extends AppCompatActivity {
         popupMenu.show();
     }
 
-    private void cancel(){
+    private void cancel() {
         finish();
     }
 
-    private void finish_add(){
+    private void finish_add() {
         SQLiteDatabase db = getBaseContext().openOrCreateDatabase("chaiok.db", MODE_PRIVATE, null);
         ContentValues values = new ContentValues();
 
@@ -273,29 +275,28 @@ public class StudentAddActivity extends AppCompatActivity {
         EditText ed2 = findViewById(R.id.studentlastname);
         EditText ed3 = findViewById(R.id.studentmidname);
         EditText ed4 = findViewById(R.id.studentgroup);
-        values.put("first_name", ed1.getText().toString());
-        values.put("last_name", ed2.getText().toString());
-        values.put("middle_name", ed3.getText().toString());
-        values.put("gang", ed4.getText().toString());
         long newRowId = -1;
-        db.execSQL("PRAGMA foreign_keys=ON");
-            try {
-                newRowId = db.insert("student", null, values);
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if (newRowId != -1){
-                    for(int i=0;i<subject.size();i=i+1){
-                        ContentValues value = new ContentValues();
-                        value.put("id_student", newRowId);
-                        value.put("name", subject.get(i).getName());
-                        value.put("mark", subject.get(i).getMark());
-                        db.insert("subject", null, value);
-                    }
+        try {
+            values.put("first_name", ed1.getText().toString());
+            values.put("last_name", ed2.getText().toString());
+            values.put("middle_name", ed3.getText().toString());
+            values.put("gang", Integer.valueOf(ed4.getText().toString()));
+            db.execSQL("PRAGMA foreign_keys=ON");
+            newRowId = db.insert("student", null, values);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (newRowId != -1) {
+                for (int i = 0; i < subject.size(); i = i + 1) {
+                    ContentValues value = new ContentValues();
+                    value.put("id_student", newRowId);
+                    value.put("name", subject.get(i).getName());
+                    value.put("mark", subject.get(i).getMark());
+                    db.insert("subject", null, value);
                 }
-                else
-                    Toast.makeText(getApplicationContext(), "Произошла ошибка", Toast.LENGTH_LONG).show();
-            }
+            } else
+                Toast.makeText(getApplicationContext(), "Произошла ошибка", Toast.LENGTH_LONG).show();
+        }
         db.close();
         finish();
     }

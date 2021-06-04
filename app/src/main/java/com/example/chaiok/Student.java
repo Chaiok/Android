@@ -5,10 +5,10 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 
 public class Student implements Parcelable {
-    private String first_name, last_name, middle_name,gang;
-    private Integer id;
+    private String first_name, last_name, middle_name;
+    private Integer id,gang;
 
-    public Student(Integer id, String firstname, String lastname, String midname, String gang) {
+    public Student(Integer id, String firstname, String lastname, String midname, Integer gang) {
         this.id = id;
         this.first_name = firstname;
         this.last_name = lastname;
@@ -21,7 +21,7 @@ public class Student implements Parcelable {
         first_name = in.readString();
         last_name = in.readString();
         middle_name = in.readString();
-        gang = in.readString();
+        gang = in.readInt();
     }
 
     public Integer getId() {
@@ -56,11 +56,11 @@ public class Student implements Parcelable {
         this.middle_name = middle_name;
     }
 
-    public String getGang() {
+    public Integer getGang() {
         return gang;
     }
 
-    public void setGang(String gang) {
+    public void setGang(Integer gang) {
         this.gang = gang;
     }
 
@@ -70,7 +70,7 @@ public class Student implements Parcelable {
         out.writeString(this.first_name);
         out.writeString(this.last_name);
         out.writeString(this.middle_name);
-        out.writeString(this.gang);
+        out.writeInt(this.gang);
     }
 
     @Override

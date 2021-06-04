@@ -18,10 +18,15 @@
             android:text="Добавить студента" />
 
         <Button
-            android:id="@+id/but_student_list"
+            android:id="@+id/but_delete_student"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Список студентов" />
+            android:text="Удалить студента" />
+
+        <ListView
+            android:id="@+id/lvstudent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 
